@@ -4,9 +4,30 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-[#090a0f] dark:text-[#f4f4f5] transition-colors duration-200;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+}
+
+/* Atmospheric Set Backgrounds (Faint studio grid & ambient lighting) */
+.cinema-bg-light {
+  background-color: #edf0f5;
+  background-image: 
+    radial-gradient(at 15% 10%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 15%, rgba(6, 182, 212, 0.07) 0px, transparent 45%),
+    radial-gradient(at 50% 90%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+    radial-gradient(circle, #cbd5e1 1.2px, transparent 1.2px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
+}
+
+.dark .cinema-bg-light,
+.dark body,
+body.dark {
+  background-color: #090a0f;
+  background-image: 
+    radial-gradient(at 20% 15%, rgba(245, 158, 11, 0.06) 0px, transparent 50%),
+    radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.06) 0px, transparent 45%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px;
 }
 
 /* Custom Scrollbar for Screenplay Teleprompter */
@@ -23,7 +44,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #94a3b8;
   border-radius: 3px;
 }
 
@@ -34,3 +55,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #f59e0b;
 }
+

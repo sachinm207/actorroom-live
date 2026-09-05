@@ -351,9 +351,9 @@ export const App: React.FC = () => {
   ) && socketRef.current?.readyState === WebSocket.OPEN;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-700 dark:selection:text-amber-300 transition-colors duration-200">
+    <div className="min-h-screen cinema-bg-light dark:cinema-bg-dark text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-700 dark:selection:text-amber-300 transition-colors duration-200">
       {/* Top Navigation Bar */}
-      <header className="border-b border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4 transition-colors duration-200">
+      <header className="border-b border-slate-300/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4 transition-colors duration-200 shadow-sm dark:shadow-none">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center font-black text-zinc-950 text-lg shadow-lg shadow-amber-500/10">
             🎬
@@ -410,7 +410,7 @@ export const App: React.FC = () => {
               value={selectedScriptId}
               onChange={(e) => setSelectedScriptId(e.target.value)}
               disabled={isSessionActive}
-              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-slate-800 dark:text-zinc-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
+              className="bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-slate-800 dark:text-zinc-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer shadow-sm"
             >
               <option value="interrogation_room">The Interrogation (Detective/Viktor)</option>
               <option value="cafe_breakup">Last Call at Blue Heron (Sara/Liam)</option>
@@ -430,7 +430,7 @@ export const App: React.FC = () => {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isSessionActive || isUploading}
-              className="px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 hover:border-amber-500/60 bg-slate-100 hover:bg-slate-200 dark:border-zinc-700 dark:hover:border-amber-500/60 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/80 text-xs font-mono text-slate-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 hover:border-amber-500/60 bg-white hover:bg-slate-50 dark:border-zinc-700 dark:hover:border-amber-500/60 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/80 text-xs font-mono text-slate-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
               title="Upload PDF audition sides or .fountain screenplay"
             >
               <span>{isUploading ? '⏳ Reading...' : '📄 Upload Sides'}</span>
@@ -443,7 +443,7 @@ export const App: React.FC = () => {
               value={userCharacter}
               onChange={(e) => setUserCharacter(e.target.value)}
               disabled={isSessionActive}
-              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-amber-700 dark:text-amber-300 font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
+              className="bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-amber-700 dark:text-amber-300 font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer shadow-sm"
             >
               {scene?.characters.map((c) => (
                 <option key={c} value={c}>
@@ -460,7 +460,7 @@ export const App: React.FC = () => {
               value={readerStyle}
               onChange={(e) => setReaderStyle(e.target.value as any)}
               disabled={isSessionActive}
-              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-cyan-700 dark:text-cyan-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 font-mono cursor-pointer"
+              className="bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-cyan-700 dark:text-cyan-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 font-mono cursor-pointer shadow-sm"
             >
               <option value="CASTING_READER">🎭 Casting Reader (Neutral & Brisk)</option>
               <option value="HIGH_STAKES">🔥 High Stakes (Dramatic Intensity)</option>
@@ -482,10 +482,10 @@ export const App: React.FC = () => {
                 }
               }
             }}
-            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 shadow-sm ${
               enableAmbience
-                ? 'bg-slate-100 border-slate-300 text-amber-700 hover:border-amber-500 dark:bg-zinc-900 dark:border-zinc-700 dark:text-amber-300 dark:hover:border-amber-500'
-                : 'bg-slate-100/50 border-slate-200 text-slate-400 hover:text-slate-700 dark:bg-zinc-900/40 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
+                ? 'bg-white border-slate-300 text-amber-700 hover:border-amber-500 dark:bg-zinc-900 dark:border-zinc-700 dark:text-amber-300 dark:hover:border-amber-500'
+                : 'bg-white/70 border-slate-200 text-slate-400 hover:text-slate-700 dark:bg-zinc-900/40 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
             }`}
             title="Toggle Film Set Room Tone Ambience"
           >
@@ -495,7 +495,7 @@ export const App: React.FC = () => {
           {/* Light / Dark Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-300 shadow-sm"
+            className="px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 bg-white hover:bg-slate-50 border-slate-300 text-slate-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-300 shadow-sm"
             title={theme === 'dark' ? 'Switch to Daylight Light Mode' : 'Switch to Studio Dark Mode'}
           >
             <span>{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</span>
