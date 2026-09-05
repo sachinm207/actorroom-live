@@ -144,8 +144,9 @@ async def websocket_rehearse(websocket: WebSocket):
             line_text=line.line
         )
 
+        reader_style = conductor.reader_style if conductor else "CASTING_READER"
         try:
-            async for pcm_chunk in agent.speak_line(line):
+            async for pcm_chunk in agent.speak_line(line, reader_style=reader_style):
                 await websocket.send_bytes(pcm_chunk)
             
             await send_json_message("AUDIO_END", speaker=char_name, current_turn_index=line.index)
@@ -197,13 +198,15 @@ async def websocket_rehearse(websocket: WebSocket):
             is_user=False
         )
 
+        reader_style = conductor.reader_style if conductor else "CASTING_READER"
         reply_text = await asyncio.to_thread(
             agent.generate_improv_dialogue,
             actor_pcm_bytes=actor_pcm_bytes,
             dialogue_history=dialogue_history,
             scene_title=conductor.scene.title,
             scene_slugline=conductor.scene.slugline,
-            user_character=conductor.user_character
+            user_character=conductor.user_character,
+            reader_style=reader_style
         )
 
         improv_line = DialogueLine(
@@ -276,6 +279,7 @@ async def websocket_rehearse(websocket: WebSocket):
                     script_id = data.get("script_id", "interrogation_room")
                     user_char = data.get("user_character", "DETECTIVE MILLER")
                     mode = data.get("mode", "SCRIPTED")
+                    reader_style = data.get("reader_style", "CASTING_READER")
                     
                     scene = script_parser.load_script_by_id(script_id)
                     barge_in_flag = False
@@ -285,6 +289,7 @@ async def websocket_rehearse(websocket: WebSocket):
                         scene=scene,
                         user_character=user_char,
                         mode=mode,
+                        reader_style=reader_style,
                         on_line_sync=on_line_sync,
                         on_ai_speak_request=on_ai_speak_request,
                         on_improv_turn=on_improv_turn,

@@ -5,12 +5,16 @@ import { LatencyMonitor } from './components/LatencyMonitor';
 import { DirectorCritiqueModal } from './components/DirectorCritiqueModal';
 import { AudioRecorder } from './audio/audioRecorder';
 import { AudioPlayer } from './audio/audioPlayer';
+import { soundEffects } from './audio/soundEffects';
 import { ScreenplayScene, DirectorCritique, RehearsalState } from './types';
 
 export const App: React.FC = () => {
   const [selectedScriptId, setSelectedScriptId] = useState<string>('interrogation_room');
   const [scene, setScene] = useState<ScreenplayScene | null>(null);
   const [userCharacter, setUserCharacter] = useState<string>('DETECTIVE MILLER');
+  const [readerStyle, setReaderStyle] = useState<'CASTING_READER' | 'HIGH_STAKES' | 'RAPID_FIRE' | 'WHISPERED'>('CASTING_READER');
+  const [enableAmbience, setEnableAmbience] = useState<boolean>(true);
+  const [slateAnimation, setSlateAnimation] = useState<boolean>(false);
   const [currentTurnIndex, setCurrentTurnIndex] = useState<number>(0);
   const [activeSpeaker, setActiveSpeaker] = useState<string | null>(null);
   const [state, setState] = useState<RehearsalState>('READY');
@@ -118,10 +122,23 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    soundEffects.duckAmbience(state === 'ACTOR_SPEAKING' || state === 'AI_SPEAKING' || activeSpeaker !== null);
+  }, [state, activeSpeaker]);
+
   const startRehearsal = async () => {
     setState('CONNECTING');
     setCritique(null);
     setCurrentTurnIndex(0);
+
+    // Trigger Slate Clap & Scene Ambience
+    soundEffects.playSlateClap();
+    setSlateAnimation(true);
+    setTimeout(() => setSlateAnimation(false), 1400);
+
+    if (enableAmbience) {
+      soundEffects.startRoomTone(selectedScriptId.includes('cafe') ? 'cafe' : 'interrogation');
+    }
 
     // Initialize AudioPlayer
     if (!audioPlayerRef.current) {
@@ -147,6 +164,7 @@ export const App: React.FC = () => {
           script_id: selectedScriptId,
           user_character: userCharacter,
           mode: rehearsalMode,
+          reader_style: readerStyle,
         })
       );
 
@@ -278,6 +296,7 @@ export const App: React.FC = () => {
   };
 
   const stopRehearsal = () => {
+    soundEffects.stopRoomTone();
     if (critique) {
       setShowModal(true);
       return;
@@ -415,6 +434,45 @@ export const App: React.FC = () => {
             </select>
           </div>
 
+          {/* Direct Your Reader Tone Selector */}
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-mono text-zinc-400">Reader Tone:</label>
+            <select
+              value={readerStyle}
+              onChange={(e) => setReaderStyle(e.target.value as any)}
+              disabled={isSessionActive}
+              className="bg-zinc-900 border border-zinc-800 text-xs text-cyan-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 font-mono cursor-pointer"
+            >
+              <option value="CASTING_READER">🎭 Casting Reader (Neutral & Brisk)</option>
+              <option value="HIGH_STAKES">🔥 High Stakes (Dramatic Intensity)</option>
+              <option value="RAPID_FIRE">⚡ Rapid-Fire (Sorkin Snappy)</option>
+              <option value="WHISPERED">🤫 Whispered (Intimate)</option>
+            </select>
+          </div>
+
+          {/* Room Ambience Toggle */}
+          <button
+            onClick={() => {
+              const next = !enableAmbience;
+              setEnableAmbience(next);
+              if (isSessionActive) {
+                if (next) {
+                  soundEffects.startRoomTone(selectedScriptId.includes('cafe') ? 'cafe' : 'interrogation');
+                } else {
+                  soundEffects.stopRoomTone();
+                }
+              }
+            }}
+            className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 ${
+              enableAmbience
+                ? 'bg-zinc-900 border-zinc-700 text-amber-300 hover:border-amber-500'
+                : 'bg-zinc-900/40 border-zinc-800 text-zinc-500 hover:text-zinc-300'
+            }`}
+            title="Toggle Film Set Room Tone Ambience"
+          >
+            <span>{enableAmbience ? '🔊 Ambience' : '🔇 Silent'}</span>
+          </button>
+
           {isAnalyzing ? (
             <div className="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-pulse">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
@@ -461,6 +519,21 @@ export const App: React.FC = () => {
           )}
         </div>
       </header>
+
+      {/* Film Slate Animation Overlay */}
+      {slateAnimation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-zinc-950/95 border-2 border-amber-500/90 px-10 py-7 rounded-2xl shadow-2xl shadow-amber-500/40 flex flex-col items-center gap-3 animate-bounce">
+            <div className="text-6xl">🎬</div>
+            <div className="text-amber-400 font-black tracking-widest text-2xl uppercase font-mono">
+              [ CLAP ] TAKE 1... ACTION!
+            </div>
+            <div className="text-zinc-300 text-xs font-mono">
+              Scene: {scene?.title} • Role: {userCharacter}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Mic Permission Warning Banner if blocked */}
       {micError && (

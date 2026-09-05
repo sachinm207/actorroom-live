@@ -52,12 +52,21 @@ class GeminiLiveService:
             return NEURAL_VOICE_MAP[voice_name]
         return "en-US-ChristopherNeural"
 
-    async def _generate_neural_pcm(self, text: str, voice: str) -> Optional[bytes]:
+    READER_STYLE_MODIFIERS = {
+        "CASTING_READER": {"rate": "+5%", "pitch": "+0Hz", "volume": "+0%"},
+        "HIGH_STAKES": {"rate": "-8%", "pitch": "-3Hz", "volume": "+5%"},
+        "RAPID_FIRE": {"rate": "+18%", "pitch": "+2Hz", "volume": "+0%"},
+        "WHISPERED": {"rate": "-5%", "pitch": "-5Hz", "volume": "-20%"}
+    }
+
+    async def _generate_neural_pcm(self, text: str, voice: str, reader_style: str = "CASTING_READER") -> Optional[bytes]:
         """
         Synthesize neural speech and convert to 16kHz 16-bit mono PCM.
+        Applies rate/pitch/volume modifiers based on reader style direction.
         """
         try:
-            comm = edge_tts.Communicate(text, voice)
+            mods = self.READER_STYLE_MODIFIERS.get(reader_style, self.READER_STYLE_MODIFIERS["CASTING_READER"])
+            comm = edge_tts.Communicate(text, voice, rate=mods["rate"], pitch=mods["pitch"], volume=mods["volume"])
             mp3_data = bytearray()
             async for chunk in comm.stream():
                 if self._cancellation_event.is_set():
@@ -86,7 +95,8 @@ class GeminiLiveService:
         character_name: str,
         line_text: str,
         voice_name: str = "Puck",
-        parenthetical: Optional[str] = None
+        parenthetical: Optional[str] = None,
+        reader_style: str = "CASTING_READER"
     ) -> AsyncGenerator[bytes, None]:
         """
         Streams 16kHz 16-bit mono PCM chunks for the specified character line.
@@ -97,7 +107,7 @@ class GeminiLiveService:
         logger.info(f"Synthesizing human dialogue for [{character_name}] (Neural Voice: {voice}): \"{line_text}\"")
 
         # 1. Attempt Neural Human Speech Generation
-        pcm_bytes = await self._generate_neural_pcm(line_text, voice)
+        pcm_bytes = await self._generate_neural_pcm(line_text, voice, reader_style=reader_style)
 
         chunk_size = settings.CHUNK_SIZE_BYTES  # 1280 bytes = 40ms of 16kHz 16-bit mono
         chunk_duration_sec = settings.CHUNK_DURATION_MS / 1000.0

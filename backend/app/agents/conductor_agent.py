@@ -21,6 +21,7 @@ class ConductorAgent:
         scene: ScreenplayScene,
         user_character: str,
         mode: str = "SCRIPTED",
+        reader_style: str = "CASTING_READER",
         on_line_sync: Optional[Callable[[DialogueLine], Awaitable[None]]] = None,
         on_ai_speak_request: Optional[Callable[[DialogueLine], Awaitable[None]]] = None,
         on_improv_turn: Optional[Callable[[bytes], Awaitable[None]]] = None,
@@ -30,6 +31,7 @@ class ConductorAgent:
         self.scene = scene
         self.user_character = user_character.strip().upper()
         self.mode = mode.strip().upper()
+        self.reader_style = reader_style.strip().upper()
         self.current_line_idx = 0
         self.state = ConductorState.IDLE
         
@@ -44,7 +46,14 @@ class ConductorAgent:
         self.speech_frames_count = 0
         self.silence_frames_count = 0
         self.min_speech_frames = 2     # ~80ms to confirm speech onset
-        self.min_silence_frames = 11   # ~440ms silence to confirm line completion
+        
+        # Adjust cue pickup responsiveness to match reader direction
+        if self.reader_style == "RAPID_FIRE":
+            self.min_silence_frames = 8   # ~320ms snappy turn handover
+        elif self.reader_style == "HIGH_STAKES":
+            self.min_silence_frames = 14  # ~560ms breathing room for dramatic pauses
+        else:
+            self.min_silence_frames = 11  # ~440ms standard natural gap
         
         # User audio accumulation for Improv Mode
         self.user_audio_buffer = bytearray()

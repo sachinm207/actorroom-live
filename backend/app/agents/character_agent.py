@@ -27,16 +27,24 @@ class CharacterAgent:
         """Immediately abort speech upon barge-in."""
         self.live_service.cancel_ongoing_stream()
 
-    async def speak_line(self, line: DialogueLine) -> AsyncGenerator[bytes, None]:
+    STYLE_ACTING_DIRECTIONS = {
+        "CASTING_READER": "Acting Style: Professional off-camera casting reader. Clean, grounded, neutral, leaving dramatic space for your auditioning partner.",
+        "HIGH_STAKES": "Acting Style: High-stakes dramatic intensity. Every beat is urgent, emotionally charged, and brimming with subtext.",
+        "RAPID_FIRE": "Acting Style: Aaron Sorkin rapid-fire rhythm. Fast-paced, razor-sharp wit, and quick conversational banter.",
+        "WHISPERED": "Acting Style: Intimate, quiet, and vulnerable. Speak softly with restrained intensity."
+    }
+
+    async def speak_line(self, line: DialogueLine, reader_style: str = "CASTING_READER") -> AsyncGenerator[bytes, None]:
         """
-        Generate and stream PCM audio for the dialogue line.
+        Generate and stream PCM audio for the dialogue line with the specified reader style.
         """
-        logger.info(f"CharacterAgent [{self.persona.name}] speaking line {line.index}...")
+        logger.info(f"CharacterAgent [{self.persona.name}] speaking line {line.index} (Style: {reader_style})...")
         async for chunk in self.live_service.stream_character_audio(
             character_name=self.persona.name,
             line_text=line.line,
             voice_name=self.persona.voice_name,
-            parenthetical=line.parenthetical
+            parenthetical=line.parenthetical,
+            reader_style=reader_style
         ):
             yield chunk
 
@@ -46,22 +54,25 @@ class CharacterAgent:
         dialogue_history: List[Dict[str, str]],
         scene_title: str,
         scene_slugline: str,
-        user_character: str
+        user_character: str,
+        reader_style: str = "CASTING_READER"
     ) -> str:
         """
         Listens to the actor's raw voice (or recent turns) using Gemini 2.5 Flash,
-        and improvises a dramatic, in-character spoken response.
+        and improvises a dramatic, in-character spoken response tuned to the reader style.
         """
         if not self.api_key:
             return f"I hear you, {user_character}. But you have no evidence."
 
         try:
             client = genai.Client(api_key=self.api_key)
+            style_direction = self.STYLE_ACTING_DIRECTIONS.get(reader_style, self.STYLE_ACTING_DIRECTIONS["CASTING_READER"])
             system_prompt = f"""You are acting in an unscripted audition rehearsal scene as the character '{self.persona.name}'.
 Scene: {scene_title} ({scene_slugline})
 Scene Partner: {user_character}
 Character Persona: {self.persona.name} - {self.persona.description or 'A complex dramatic character with clear objectives.'}
 Emotional Baseline: {self.persona.emotional_baseline}
+{style_direction}
 
 Acting Directives:
 - Stay 100% strictly in character.

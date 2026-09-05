@@ -47,6 +47,7 @@ class ClientMessage(BaseModel):
     script_id: Optional[str] = None
     user_character: Optional[str] = None
     mode: Optional[Literal["SCRIPTED", "IMPROV"]] = "SCRIPTED"
+    reader_style: Optional[Literal["CASTING_READER", "HIGH_STAKES", "RAPID_FIRE", "WHISPERED"]] = "CASTING_READER"
     payload: Optional[Dict[str, Any]] = None
 
 class ServerMessage(BaseModel):
