@@ -13,8 +13,11 @@
 ### Key Innovations:
 1. **Sub-400ms Turnaround:** Direct 16kHz linear PCM streaming over WebSockets eliminates sluggish text roundtrips.
 2. **Sub-150ms Barge-In Cutoff:** Actors can interrupt, cut in, or step on opposing lines naturally; AI speech cuts off immediately without talking over the human.
-3. **Fountain Screenplay Parsing:** Automatically segments scene headings, character cues, parentheticals, and dialogue beats.
-4. **AI Director Audition Coach:** Evaluates pacing cadence, cue pickups, line accuracy, and delivers constructive director notes post-take.
+3. **Dual Audition Modes:**
+   - 📜 **Scripted Table-Read:** Word-for-word cue practice with teleprompter and character line sync.
+   - 🎭 **Live Gemini Improv:** Spontaneous unscripted acting powered by Gemini 2.5 Flash perceiving dialogue nuance.
+4. **PDF Sides & Screenplay Drag-and-Drop Ingestion:** Automatically parses uploaded PDF audition sides and `.fountain` files into scenes, characters, and dialogue beats via PyMuPDF.
+5. **AI Director Audition Coach:** Evaluates pacing cadence, cue pickups, line accuracy, and delivers nuanced Hollywood director notes post-take.
 
 ---
 
@@ -26,7 +29,7 @@ Simply click **Run**. The configuration in `.replit` executes `bash run.sh`, ser
 ### Locally (Linux / macOS):
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/actorroom-live.git
+git clone https://github.com/sachinm207/actorroom-live.git
 cd actorroom-live
 
 # Run the unified server
@@ -34,9 +37,13 @@ bash run.sh
 ```
 Open your browser at **`http://localhost:8000`**.
 
-### Verify with Automated Test Harness:
+### Verify with Automated Test Harnesses:
 ```bash
+# Verify scripted table-read & barge-in cutoff
 ./backend/venv/bin/python3 backend/test_stream_harness.py
+
+# Verify live Gemini improv mode
+./backend/venv/bin/python3 backend/test_improv_harness.py
 ```
 
 ---
