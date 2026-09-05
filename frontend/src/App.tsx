@@ -334,7 +334,7 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-300">
       {/* Top Navigation Bar */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/70 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center font-black text-zinc-950 text-lg shadow-lg shadow-amber-500/10">
             🎬
@@ -355,7 +355,7 @@ export const App: React.FC = () => {
         </div>
 
         {/* Script, Role & Mode Selector Bar */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Mode Pill Toggle */}
           <div className="flex bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 shadow-inner">
             <button
