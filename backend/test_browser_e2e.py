@@ -35,7 +35,7 @@ def run_browser_automation_test():
         assert page.locator("text=ActorRoom").is_visible(), "ActorRoom brand logo not visible"
         assert page.locator("button:has-text('Scripted')").is_visible(), "Scripted mode button missing"
         assert page.locator("button:has-text('Improv')").is_visible(), "Improv mode button missing"
-        assert page.locator("button:has-text('Upload Sides')").is_visible(), "Upload Sides button missing"
+        assert page.locator("button:has-text('Upload Script / Sides')").is_visible(), "Upload Script / Sides button missing"
         assert page.locator("select", has_text="Casting Reader").is_visible(), "Reader Tone select missing"
         assert page.locator("button:has-text('Ambience')").is_visible(), "Ambience button missing"
         assert page.locator("button:has-text('Start Audition Take')").is_visible(), "Start Take button missing"
@@ -116,7 +116,7 @@ def run_browser_automation_test():
 
         # Wait for Director Scorecard Modal to open
         print("  Waiting for Gemini Director Critique...")
-        page.wait_for_selector("text=Audition Scorecard", timeout=12000)
+        page.wait_for_selector("text=Audition Scorecard", timeout=20000)
         print("  [OK] 🏆 Director's Scorecard Modal Opened!")
         
         # Verify Scorecard Contents

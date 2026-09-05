@@ -62,7 +62,7 @@ class DirectorAgent:
         # Attempt Generative Director Critique using Gemini 2.5 Flash
         if self.api_key:
             try:
-                client = genai.Client(api_key=self.api_key)
+                client = genai.Client(api_key=self.api_key, http_options=types.HttpOptions(timeout=5000))
                 prompt = f"""You are a veteran film director and audition coach giving acting notes after a self-tape audition table-read.
 Scene: {scene.title} ({scene.slugline})
 Actor Role: {user_character}

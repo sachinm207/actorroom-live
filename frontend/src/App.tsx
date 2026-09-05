@@ -431,9 +431,9 @@ export const App: React.FC = () => {
               onClick={() => fileInputRef.current?.click()}
               disabled={isSessionActive || isUploading}
               className="px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 hover:border-amber-500/60 bg-white hover:bg-slate-50 dark:border-zinc-700 dark:hover:border-amber-500/60 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/80 text-xs font-mono text-slate-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
-              title="Upload PDF audition sides or .fountain screenplay"
+              title="Upload PDF audition sides or .fountain/.txt screenplay"
             >
-              <span>{isUploading ? '⏳ Reading...' : '📄 Upload Sides'}</span>
+              <span>{isUploading ? '⏳ Reading...' : '📄 Upload Script / Sides'}</span>
             </button>
           </div>
 
@@ -487,9 +487,9 @@ export const App: React.FC = () => {
                 ? 'bg-white border-slate-300 text-amber-700 hover:border-amber-500 dark:bg-zinc-900 dark:border-zinc-700 dark:text-amber-300 dark:hover:border-amber-500'
                 : 'bg-white/70 border-slate-200 text-slate-400 hover:text-slate-700 dark:bg-zinc-900/40 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
             }`}
-            title="Toggle Film Set Room Tone Ambience"
+            title="Toggle Film Set Room Tone Ambience Sound"
           >
-            <span>{enableAmbience ? '🔊 Ambience' : '🔇 Silent'}</span>
+            <span>{enableAmbience ? '🔊 Ambience Sound' : '🔇 Silent (No Ambience)'}</span>
           </button>
 
           {/* Light / Dark Theme Toggle */}
