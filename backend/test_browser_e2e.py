@@ -39,10 +39,24 @@ def run_browser_automation_test():
         assert page.locator("select", has_text="Casting Reader").is_visible(), "Reader Tone select missing"
         assert page.locator("button:has-text('Ambience')").is_visible(), "Ambience button missing"
         assert page.locator("button:has-text('Start Audition Take')").is_visible(), "Start Take button missing"
-        print("  [OK] All header buttons and selectors are present and rendered cleanly.")
+        assert page.locator("button:has-text('Dark')").is_visible() or page.locator("button:has-text('Light')").is_visible(), "Theme toggle button missing"
+        print("  [OK] All header buttons, selectors, and theme toggle are present.")
 
-        # 3. Test Ambience Toggle & Reader Tone Selection
-        print("\n🎛️ Step 3: Testing Ambience Toggle & Reader Direction...")
+        # 3. Test Theme Toggle (Dark <-> Light), Ambience & Reader Tone
+        print("\n🎨 Step 3: Testing Light / Dark Theme Switching & Atmosphere...")
+        theme_btn = page.locator("button:has-text('Dark')")
+        theme_btn.click()
+        time.sleep(0.4)
+        assert page.locator("button:has-text('Light')").is_visible(), "Theme did not switch to Light"
+        print("  [OK] ☀️ Switched to Daylight Light Theme.")
+        page.screenshot(path=os.path.join(screenshot_dir, "01b_light_theme.png"))
+
+        # Switch back to Studio Dark Theme
+        page.locator("button:has-text('Light')").click()
+        time.sleep(0.4)
+        assert page.locator("button:has-text('Dark')").is_visible(), "Theme did not switch back to Dark"
+        print("  [OK] 🌙 Switched back to Studio Dark Theme.")
+
         ambience_btn = page.locator("button:has-text('Ambience')")
         ambience_btn.click()
         time.sleep(0.3)

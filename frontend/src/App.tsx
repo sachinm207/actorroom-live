@@ -25,6 +25,25 @@ export const App: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [rehearsalMode, setRehearsalMode] = useState<'SCRIPTED' | 'IMPROV'>('SCRIPTED');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const saved = localStorage.getItem('actorroom_theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+    return 'dark';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('actorroom_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const socketRef = useRef<WebSocket | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
@@ -332,23 +351,23 @@ export const App: React.FC = () => {
   ) && socketRef.current?.readyState === WebSocket.OPEN;
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-700 dark:selection:text-amber-300 transition-colors duration-200">
       {/* Top Navigation Bar */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+      <header className="border-b border-slate-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4 transition-colors duration-200">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center font-black text-zinc-950 text-lg shadow-lg shadow-amber-500/10">
             🎬
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-extrabold text-lg tracking-tight text-zinc-100">
-                ActorRoom <span className="text-amber-400">Live</span>
+              <h1 className="font-extrabold text-lg tracking-tight text-slate-900 dark:text-zinc-100">
+                ActorRoom <span className="text-amber-500 dark:text-amber-400">Live</span>
               </h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30">
                 Replit Agent Track
               </span>
             </div>
-            <p className="text-xs text-zinc-400 font-mono">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
               Sub-400ms Multi-Agent Audition Rehearsal Sandbox
             </p>
           </div>
@@ -357,14 +376,14 @@ export const App: React.FC = () => {
         {/* Script, Role & Mode Selector Bar */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Mode Pill Toggle */}
-          <div className="flex bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 shadow-inner">
+          <div className="flex bg-slate-200/80 dark:bg-zinc-900/90 p-1 rounded-xl border border-slate-300 dark:border-zinc-800 shadow-inner">
             <button
               onClick={() => setRehearsalMode('SCRIPTED')}
               disabled={isSessionActive}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
                 rehearsalMode === 'SCRIPTED'
                   ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
               }`}
             >
               📜 Scripted
@@ -375,23 +394,23 @@ export const App: React.FC = () => {
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 rehearsalMode === 'IMPROV'
                   ? 'bg-cyan-500 text-zinc-950 shadow-md shadow-cyan-500/20'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                  : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
               }`}
             >
               <span>🎭 Improv</span>
-              <span className="text-[9px] px-1 py-0.5 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-400/40">
+              <span className="text-[9px] px-1 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 border border-cyan-400/40">
                 Gemini Live
               </span>
             </button>
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-xs font-mono text-zinc-400">Scene:</label>
+            <label className="text-xs font-mono text-slate-500 dark:text-zinc-400">Scene:</label>
             <select
               value={selectedScriptId}
               onChange={(e) => setSelectedScriptId(e.target.value)}
               disabled={isSessionActive}
-              className="bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
+              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-slate-800 dark:text-zinc-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
             >
               <option value="interrogation_room">The Interrogation (Detective/Viktor)</option>
               <option value="cafe_breakup">Last Call at Blue Heron (Sara/Liam)</option>
@@ -411,7 +430,7 @@ export const App: React.FC = () => {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isSessionActive || isUploading}
-              className="px-2.5 py-1.5 rounded-xl border border-dashed border-zinc-700 hover:border-amber-500/60 bg-zinc-900/60 hover:bg-zinc-800/80 text-xs font-mono text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 hover:border-amber-500/60 bg-slate-100 hover:bg-slate-200 dark:border-zinc-700 dark:hover:border-amber-500/60 dark:bg-zinc-900/60 dark:hover:bg-zinc-800/80 text-xs font-mono text-slate-700 dark:text-zinc-300 transition-all cursor-pointer flex items-center gap-1.5"
               title="Upload PDF audition sides or .fountain screenplay"
             >
               <span>{isUploading ? '⏳ Reading...' : '📄 Upload Sides'}</span>
@@ -419,12 +438,12 @@ export const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="text-xs font-mono text-zinc-400">Your Role:</label>
+            <label className="text-xs font-mono text-slate-500 dark:text-zinc-400">Your Role:</label>
             <select
               value={userCharacter}
               onChange={(e) => setUserCharacter(e.target.value)}
               disabled={isSessionActive}
-              className="bg-zinc-900 border border-zinc-800 text-xs text-amber-300 font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
+              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-amber-700 dark:text-amber-300 font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:border-amber-500 font-mono cursor-pointer"
             >
               {scene?.characters.map((c) => (
                 <option key={c} value={c}>
@@ -436,12 +455,12 @@ export const App: React.FC = () => {
 
           {/* Direct Your Reader Tone Selector */}
           <div className="flex items-center gap-2">
-            <label className="text-xs font-mono text-zinc-400">Reader Tone:</label>
+            <label className="text-xs font-mono text-slate-500 dark:text-zinc-400">Reader Tone:</label>
             <select
               value={readerStyle}
               onChange={(e) => setReaderStyle(e.target.value as any)}
               disabled={isSessionActive}
-              className="bg-zinc-900 border border-zinc-800 text-xs text-cyan-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 font-mono cursor-pointer"
+              className="bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs text-cyan-700 dark:text-cyan-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 font-mono cursor-pointer"
             >
               <option value="CASTING_READER">🎭 Casting Reader (Neutral & Brisk)</option>
               <option value="HIGH_STAKES">🔥 High Stakes (Dramatic Intensity)</option>
@@ -465,17 +484,26 @@ export const App: React.FC = () => {
             }}
             className={`px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 ${
               enableAmbience
-                ? 'bg-zinc-900 border-zinc-700 text-amber-300 hover:border-amber-500'
-                : 'bg-zinc-900/40 border-zinc-800 text-zinc-500 hover:text-zinc-300'
+                ? 'bg-slate-100 border-slate-300 text-amber-700 hover:border-amber-500 dark:bg-zinc-900 dark:border-zinc-700 dark:text-amber-300 dark:hover:border-amber-500'
+                : 'bg-slate-100/50 border-slate-200 text-slate-400 hover:text-slate-700 dark:bg-zinc-900/40 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300'
             }`}
             title="Toggle Film Set Room Tone Ambience"
           >
             <span>{enableAmbience ? '🔊 Ambience' : '🔇 Silent'}</span>
           </button>
 
+          {/* Light / Dark Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="px-2.5 py-1.5 rounded-xl border text-xs font-mono transition-all cursor-pointer flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-300 shadow-sm"
+            title={theme === 'dark' ? 'Switch to Daylight Light Mode' : 'Switch to Studio Dark Mode'}
+          >
+            <span>{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</span>
+          </button>
+
           {isAnalyzing ? (
-            <div className="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+            <div className="bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40 font-mono text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-amber-500 dark:bg-amber-400 animate-ping" />
               <span>🎬 Gemini Director Reviewing...</span>
             </div>
           ) : critique ? (
@@ -505,13 +533,13 @@ export const App: React.FC = () => {
               <button
                 onClick={simulateSpeech}
                 title="Tap if you don't have a mic or want to test line delivery silently"
-                className="bg-zinc-800 hover:bg-zinc-700 text-amber-300 border border-amber-500/40 font-mono text-xs px-3.5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                className="bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-amber-700 dark:text-amber-300 border border-amber-500/40 font-mono text-xs px-3.5 py-2.5 rounded-xl transition-all duration-200 cursor-pointer flex items-center gap-1.5"
               >
                 <span>🗣️ Deliver Line (Simulate)</span>
               </button>
               <button
                 onClick={stopRehearsal}
-                className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 font-bold text-xs uppercase px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-red-500/10 cursor-pointer flex items-center gap-1.5"
+                className="bg-red-500/20 hover:bg-red-500/30 text-red-600 dark:text-red-300 border border-red-500/40 font-bold text-xs uppercase px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-red-500/10 cursor-pointer flex items-center gap-1.5"
               >
                 <span>🛑 Cut & Review</span>
               </button>
@@ -523,12 +551,12 @@ export const App: React.FC = () => {
       {/* Film Slate Animation Overlay */}
       {slateAnimation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <div className="bg-zinc-950/95 border-2 border-amber-500/90 px-10 py-7 rounded-2xl shadow-2xl shadow-amber-500/40 flex flex-col items-center gap-3 animate-bounce">
+          <div className="bg-slate-900/95 dark:bg-zinc-950/95 border-2 border-amber-500/90 px-10 py-7 rounded-2xl shadow-2xl shadow-amber-500/40 flex flex-col items-center gap-3 animate-bounce">
             <div className="text-6xl">🎬</div>
             <div className="text-amber-400 font-black tracking-widest text-2xl uppercase font-mono">
               [ CLAP ] TAKE 1... ACTION!
             </div>
-            <div className="text-zinc-300 text-xs font-mono">
+            <div className="text-slate-300 text-xs font-mono">
               Scene: {scene?.title} • Role: {userCharacter}
             </div>
           </div>
@@ -537,14 +565,14 @@ export const App: React.FC = () => {
 
       {/* Mic Permission Warning Banner if blocked */}
       {micError && (
-        <div className="bg-amber-500/15 border-b border-amber-500/30 px-6 py-2.5 text-xs text-amber-300 flex items-center justify-between">
+        <div className="bg-amber-500/15 border-b border-amber-500/30 px-6 py-2.5 text-xs text-amber-700 dark:text-amber-300 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span>⚠️</span>
             <span>{micError}</span>
           </div>
           <button
             onClick={() => setMicError(null)}
-            className="text-zinc-400 hover:text-zinc-200 font-bold ml-4 text-sm"
+            className="text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200 font-bold ml-4 text-sm"
           >
             ✕
           </button>
@@ -567,10 +595,10 @@ export const App: React.FC = () => {
           {/* Character Reader Avatar Cards */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono font-semibold uppercase text-zinc-400">
+              <span className="text-xs font-mono font-semibold uppercase text-slate-500 dark:text-zinc-400">
                 Scene Ensemble (AI Characters)
               </span>
-              <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
+              <span className="text-[10px] font-mono text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
                 Live Turn-Taking
               </span>
             </div>
