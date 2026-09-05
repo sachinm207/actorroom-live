@@ -30,6 +30,26 @@ body.dark {
   background-size: 100% 100%, 100% 100%, 28px 28px;
 }
 
+/* Atmospheric Top Bar Header */
+.cinema-header {
+  background: linear-gradient(
+    90deg,
+    rgba(254, 243, 199, 0.8) 0%,
+    rgba(241, 245, 249, 0.92) 32%,
+    rgba(238, 242, 255, 0.92) 65%,
+    rgba(207, 250, 254, 0.8) 100%
+  );
+  border-bottom: 1px solid rgba(214, 222, 235, 0.85);
+  box-shadow: 0 4px 16px -2px rgba(100, 116, 139, 0.08);
+}
+
+.dark .cinema-header,
+.dark header.cinema-header {
+  background: rgba(9, 10, 15, 0.85);
+  border-bottom: 1px solid rgba(39, 39, 42, 0.8);
+  box-shadow: none;
+}
+
 /* Custom Scrollbar for Screenplay Teleprompter */
 ::-webkit-scrollbar {
   width: 6px;

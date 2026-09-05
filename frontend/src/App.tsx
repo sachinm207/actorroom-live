@@ -353,7 +353,7 @@ export const App: React.FC = () => {
   return (
     <div className="min-h-screen cinema-bg-light dark:cinema-bg-dark text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-700 dark:selection:text-amber-300 transition-colors duration-200">
       {/* Top Navigation Bar */}
-      <header className="border-b border-slate-300/80 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4 transition-colors duration-200 shadow-sm dark:shadow-none">
+      <header className="cinema-header backdrop-blur-md sticky top-0 z-40 px-6 py-3 flex flex-wrap items-center justify-between gap-4 transition-all duration-200">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-cyan-500 flex items-center justify-center font-black text-zinc-950 text-lg shadow-lg shadow-amber-500/10">
             🎬
