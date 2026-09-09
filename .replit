@@ -1,13 +1,16 @@
-modules = ["python-3.11", "nodejs-20"]
 run = "bash run.sh"
+entrypoint = "run.sh"
 
 [nix]
 channel = "stable-24_05"
 
-[deployment]
-run = ["bash", "run.sh"]
-deploymentTarget = "cloudrun"
+[env]
+PYTHONPATH = "backend"
 
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[deployment]
+run = ["bash", "run.sh"]
+deploymentTarget = "autoscale"
